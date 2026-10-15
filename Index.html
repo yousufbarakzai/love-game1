@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love Challenge ❤️</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;font-family:Tahoma,sans-serif;text-align:center;
+ background:linear-gradient(135deg,#ff758c,#ff7eb3,#a18cd1);
+ color:white;min-height:100vh;padding:18px;
+}
+.box{
+ max-width:430px;margin:25px auto;background:#ffffff25;
+ border:1px solid #ffffff65;border-radius:25px;
+ padding:22px;box-shadow:0 10px 30px #6b174b30;
+}
+h1{font-size:27px}
+button{
+ border:0;border-radius:15px;padding:14px 20px;
+ background:white;color:#e83e75;font-size:17px;
+ font-weight:bold;cursor:pointer;margin:8px;
+}
+button:active{transform:scale(.95)}
+#arena{
+ position:relative;height:330px;background:#ffffff25;
+ border-radius:20px;overflow:hidden;margin-top:15px;
+}
+.heart{
+ position:absolute;font-size:36px;cursor:pointer;
+ user-select:none;touch-action:manipulation;
+}
+#photo{max-width:100%;width:250px;border-radius:20px;border:4px solid white}
+.small{font-size:14px;line-height:2}
+</style>
+</head>
+<body>
+<div class="box" id="game">
+ <div style="font-size:55px">💘</div>
+ <h1>Love Challenge 😈</h1>
+ <p>خانم خوشگله! حاضری برای عشقت بجنگی؟ 😂❤️</p>
+ <p>۱۵ ثانیه وقت داری تا ۱۰ قلب جمع کنی!</p>
+ <p>⚠️ قلب‌های شکسته رو نگیر! 💔</p>
+ <button onclick="startGame()">شروع بازی 🎮</button>
+</div>
+
+<script>
+let score=0,time=15,spawnTimer,clockTimer,playing=false;
+
+function startGame(){
+ clearInterval(spawnTimer);
+ clearInterval(clockTimer);
+ score=0;time=15;playing=true;
+
+ document.getElementById("game").innerHTML=`
+ <h2>جمع کن، عشق من! ❤️</h2>
+ <p>امتیاز: <b id="score">0</b> / 10</p>
+ <p>زمان: <b id="time">15</b> ثانیه ⏳</p>
+ <div id="arena"></div>
+ <p class="small">❤️ قلب‌ها رو بگیر، 💔 قلب شکسته امتیازت رو کم می‌کنه!</p>
+ <button onclick="endGame()">خروج</button>`;
+
+ const arena=document.getElementById("arena");
+
+ spawnTimer=setInterval(()=>{
+   if(!playing)return;
+   const heart=document.createElement("span");
+   const broken=Math.random()<0.25;
+   heart.className="heart";
+   heart.textContent=broken?"💔":"❤️";
+   heart.style.left=Math.random()*82+"%";
+   heart.style.top=Math.random()*78+"%";
+
+   heart.onclick=()=>{
+     if(!playing)return;
+     if(broken)score=Math.max(0,score-2);
+     else score++;
+     document.getElementById("score").textContent=score;
+     heart.remove();
+     if(score>=10)finish(true);
+   };
+
+   arena.appendChild(heart);
+   setTimeout(()=>heart.remove(),1100);
+ },400);
+
+ clockTimer=setInterval(()=>{
+   time--;
+   const el=document.getElementById("time");
+   if(el)el.textContent=time;
+   if(time<=0)finish(score>=10);
+ },1000);
+}
+
+function finish(won){
+ if(!playing)return;
+ playing=false;
+ clearInterval(spawnTimer);
+ clearInterval(clockTimer);
+
+ if(won){
+  document.getElementById("game").innerHTML=`
+  <div style="font-size:55px">🏆💖🎉</div>
+  <h1>وای عشقم، بردی! 😍</h1>
+  <p>تو برنده چالش عشق شدی! 🥹❤️</p>
+  <p>جایزه مخصوصت منتظرته...</p>
+  <button onclick="prize()">باز کردن جایزه 🎁</button>`;
+ }else{
+  document.getElementById("game").innerHTML=`
+  <div style="font-size:55px">😂💗</div>
+  <h1>ای وای، وقت تموم شد!</h1>
+  <p>فقط ${score} قلب جمع کردی!</p>
+  <button onclick="startGame()">دوباره امتحان کن 😈</button>`;
+ }
+}
+
+function prize(){
+ document.getElementById("game").innerHTML=`
+ <div style="font-size:55px">🎁❤️🌹</div>
+ <h1>جایزه تووو! 😍</h1>
+ <img id="photo" src="yusuf.jpg" alt="عکس عشقم"
+ onerror="this.style.display='none';document.getElementById('error').style.display='block'">
+ <p id="error" style="display:none">عکس خودت رو با نام yusuf.jpg کنار فایل HTML بگذار ❤️</p>
+ <h2>این دیوونه عاشقته! 😂💋</h2>
+ <p>جایزه‌ات یک عالمه عشق و بغل مجازیه! 🤗❤️</p>
+ <button onclick="celebrate()">بیشترررر ❤️</button>
+ <button onclick="startGame()">دوباره بازی کنیم 🎮</button>`;
+}
+
+function celebrate(){
+ for(let i=0;i<30;i++){
+  const h=document.createElement("div");
+  h.textContent=["💗","❤️","😘","💕","🌹"][Math.floor(Math.random()*5)];
+  h.style.cssText=`position:fixed;left:${Math.random()*95}%;top:${Math.random()*90}%;font-size:30px;pointer-events:none;animation:fall 2s forwards`;
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),2000);
+ }
+}
+
+function endGame(){
+ playing=false;
+ clearInterval(spawnTimer);
+ clearInterval(clockTimer);
+ document.getElementById("game").innerHTML=`
+ <h1>بازی متوقف شد ❤️</h1>
+ <button onclick="startGame()">شروع دوباره 🎮</button>`;
+}
+</script>
+<style>
+@keyframes fall{
+ to{transform:translateY(100px) rotate(360deg);opacity:0}
+}
+</style>
+</body>
+</html>
